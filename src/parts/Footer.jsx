@@ -3,13 +3,13 @@ import React from 'react'
 import Button from 'elements/Button/index'
 import IconText from 'parts/IconText'
 
-export default function Footer() {
+export default function Footer(props) {
   return (
     <footer>
       <div className="container">
         <div className="row">
           <div className="col-3" style={{ marginRight: 100 }}>
-            <IconText />
+            <IconText onClickTop={props.refHeader} />
             <p className="brand-tagline">
               We kaboom your beauty holiday instantly and memorable.
             </p>

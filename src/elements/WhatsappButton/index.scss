@@ -1,0 +1,29 @@
+.fragment {
+  position: fixed;
+  right: 50px;
+  bottom: 50px;
+}
+
+.ButtonColor {
+  background-color: #25d366 !important;
+  border-color: #25d366 !important;
+  width: 60px !important;
+  height: 60px !important;
+
+  :hover {
+    background-color: #25d366 !important;
+    border-color: #25d366 !important;
+  }
+  :active {
+    background-color: #25d366 !important;
+    border-color: #25d366 !important;
+  }
+  :focus {
+    background-color: #25d366 !important;
+    border-color: #25d366 !important;
+  }
+}
+
+.iconChat {
+  font-size: 20pt;
+}

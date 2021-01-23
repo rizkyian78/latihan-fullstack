@@ -7,6 +7,7 @@ import Button from 'elements/Button/index'
 import Fade from 'react-reveal/Fade'
 
 export default function Testimony({ data }) {
+  console.log(data.imageUrl)
   return (
     <Fade bottom>
       <section className="container">

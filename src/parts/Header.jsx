@@ -2,6 +2,7 @@ import React from 'react'
 import Fade from 'react-reveal/Fade'
 import Button from 'elements/Button'
 import IconText from 'parts/IconText'
+import WhatsAppButton from 'elements/WhatsappButton/index'
 
 export default function Header(props) {
   const getNavLinkClass = (path) => {
@@ -34,6 +35,9 @@ export default function Header(props) {
                   <Button className="nav-link" type="link" href="/agents">
                     Agents
                   </Button>
+                </li>
+                <li className={`nav-item`}>
+                  <WhatsAppButton />
                 </li>
               </ul>
             </div>
