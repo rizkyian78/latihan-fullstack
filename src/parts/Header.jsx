@@ -2,11 +2,35 @@ import React from 'react'
 import Fade from 'react-reveal/Fade'
 import Button from 'elements/Button'
 import IconText from 'parts/IconText'
-import WhatsAppButton from 'elements/WhatsappButton/index'
+import { Helmet } from 'react-helmet'
 
 export default function Header(props) {
+  const [Active, setActive] = React.useState(false)
   const getNavLinkClass = (path) => {
     return props.location.pathname === path ? 'active' : ' '
+  }
+  const darkMode = () => {
+    setActive(!Active)
+  }
+  if (props.isCentered) {
+    return (
+      <>
+        <Helmet>
+          <title>Thonhouse | CheckOut</title>
+        </Helmet>
+        <Fade>
+          <header className="spacing-sm">
+            <div className="container">
+              <nav className="navbar navbar-expand-lg navbar-light">
+                <Button className="brand-text-icon mx-auto" href="" type="link">
+                  Thon<span className="text-gray-900">House.</span>
+                </Button>
+              </nav>
+            </div>
+          </header>
+        </Fade>
+      </>
+    )
   }
   return (
     <Fade>
@@ -36,9 +60,13 @@ export default function Header(props) {
                     Agents
                   </Button>
                 </li>
-                <li className={`nav-item`}>
-                  <WhatsAppButton />
+                <li className={`nav-item`}></li>
+                <li className={`nav-item ${getNavLinkClass('/agents')}`}>
+                  <Button className="nav-link" type="link" href="/admin">
+                    Admin
+                  </Button>
                 </li>
+                <li className={`nav-item`}></li>
               </ul>
             </div>
           </nav>

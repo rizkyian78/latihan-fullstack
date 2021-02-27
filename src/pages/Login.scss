@@ -1,0 +1,35 @@
+@import url('https://fonts.googleapis.com/css2?family=Lato:wght@400&display=swap');
+@import '../assets//scss//colorVariable';
+.is-hour {
+  font-size: 28px;
+  font-family: 'Lato', sans-serif;
+}
+.auth-box {
+  font-size: 14px;
+  background-color: #204e84;
+  border: 2px solid transparent;
+  border-radius: 20px;
+  width: 80%;
+  position: relative;
+  justify-content: center;
+  cursor: pointer;
+  text-align: center;
+}
+
+.panel-box {
+  background-color: #204e84;
+  width: 35%;
+  border-radius: 30px;
+  height: 300px;
+  font-family: 'Lato', sans-serif;
+  margin-top: -350px;
+}
+
+.panel-font {
+  font-size: 16px;
+  font-weight: bolder;
+  color: antiquewhite;
+}
+.button-border {
+  border-radius: 300px;
+}

@@ -11,7 +11,6 @@ import Fade from 'react-reveal/Fade'
 
 export default function Hero(props) {
   function showMostPicked() {
-    console.log(props.refMostPicked)
     window.scrollTo({
       top: props.refMostPicked.current.offsetTop - 30,
       // left: props.refMostPicked.current.offsetT

@@ -3,7 +3,7 @@ export const numberFormat = (number) => {
   return formatNumber.format(number)
 }
 
-export const formatDate = (date, locale) => {
+export const formatDate = (date, locale = 'id') => {
   const d = new Date(date)
   const dtf = new Intl.DateTimeFormat(locale, {
     year: 'numeric',

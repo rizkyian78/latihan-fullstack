@@ -3,14 +3,13 @@ import propTypes from 'prop-types'
 
 import Button from 'elements/Button/index'
 import { InputDate, InputNumber } from 'elements/Form'
-import { Divider, Typography } from 'antd'
-
-const { Text } = Typography
+import Swal from 'sweetalert2'
 
 export default class BookingForm extends Component {
   constructor(props) {
     super(props)
     this.state = {
+      isContinue: false,
       isCheck: false,
       data: {
         duration: 1,
@@ -32,9 +31,25 @@ export default class BookingForm extends Component {
       },
     })
   }
-  testCheck = () => {
+  testCheck = (e) => {
     this.setState({
       isCheck: !this.state.isCheck,
+      isContinue: true,
+    })
+    const Toast = Swal.mixin({
+      toast: true,
+      position: 'center',
+      showConfirmButton: false,
+      timer: 3000,
+      didOpen: (toast) => {
+        toast.addEventListener('mouseenter', Swal.stopTimer)
+        toast.addEventListener('mouseleave', Swal.resumeTimer)
+      },
+    })
+
+    Toast.fire({
+      icon: 'success',
+      title: 'Kamar Tersedia',
     })
   }
 
@@ -115,12 +130,6 @@ export default class BookingForm extends Component {
         >
           Check Available
         </Button>
-        {this.state.isCheck === true ? (
-          <Text>
-            {`Kamar Tersedia`}
-            <Divider />
-          </Text>
-        ) : null}
         <Button
           className="btn"
           hasShadow

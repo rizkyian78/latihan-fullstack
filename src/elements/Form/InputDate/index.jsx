@@ -8,6 +8,7 @@ import * as locales from 'react-date-range/dist/locale'
 import 'react-date-range/dist/theme/default.css'
 import './index.scss'
 import IconCalendar from 'assets/images/Icons/ic_calendar.svg'
+import moment from 'moment'
 
 export default function Date(props) {
   const { value, placeholder, name } = props
@@ -85,7 +86,7 @@ export default function Date(props) {
               })}
             </select>
             <DateRange
-              classNames="calendar-edit"
+              minDate={moment().toDate()}
               locale={locales[locale]}
               showSelectionPreview={true}
               editableDateInputs={true}
@@ -93,7 +94,7 @@ export default function Date(props) {
               moveRangeOnFirstSelection={false}
               onRangeFocusChange={check}
               ranges={[value]}
-              direction="horizontal"
+              direction="vertical"
             />
           </div>
         )}
