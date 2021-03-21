@@ -91,3 +91,18 @@ export function getCurrDayAndMonth(locale) {
     .trim() // remove spaces from the start and the end
     .replace(/,$/g, '') // remove comma from the end
 }
+
+export function parseJwt(token) {
+  var base64Url = token.split('.')[1]
+  var base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/')
+  var jsonPayload = decodeURIComponent(
+    atob(base64)
+      .split('')
+      .map(function (c) {
+        return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2)
+      })
+      .join(''),
+  )
+
+  return JSON.parse(jsonPayload)
+}

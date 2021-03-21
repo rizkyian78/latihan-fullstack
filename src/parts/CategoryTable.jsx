@@ -12,6 +12,7 @@ import {
   Popconfirm,
   notification,
   message,
+  Skeleton,
 } from 'antd'
 import axios from 'axios'
 import { Formik } from 'formik'
@@ -24,15 +25,18 @@ export default function CategoryTable() {
   const [isModalShow, setIsModalShow] = React.useState(false)
   const [modalType, setModalType] = React.useState('')
   const [category, setCategory] = React.useState('')
+  const [isLoading, setIsLoading] = React.useState(false)
   const [initialValues, setInitialValues] = React.useState({
     id: '',
     name: '',
   })
 
   React.useEffect(() => {
+    setIsLoading(true)
     axios
       .get('http://localhost:8090/v1/category')
       .then((res) => {
+        setIsLoading(false)
         setCategory(res.data.data)
       })
       .catch((err) => console.log(err))
@@ -179,7 +183,6 @@ export default function CategoryTable() {
           `http://localhost:8090/v1/category?sorted=[{"id":"name","${sorter.order}":"true"}]`,
         )
         .then((res) => {
-          console.log()
           setCategory(res.data.data)
         })
     }
@@ -188,89 +191,98 @@ export default function CategoryTable() {
     <>
       <Card className="shadow mt-3" style={{ borderRadius: 30 }}>
         <Typography.Title level={2}>Category</Typography.Title>
-        <Row justify="space-between" align="middle" gutter={[16, 8]}>
-          <Col>
-            <Button
-              type="primary"
-              onClick={() => {
-                setIsModalShow(true)
-                setModalType('add')
+        {isLoading ? (
+          <>
+            <Skeleton active round loading />
+          </>
+        ) : (
+          <>
+            <Row justify="space-between" align="middle" gutter={[16, 8]}>
+              <Col>
+                <Button
+                  type="primary"
+                  onClick={() => {
+                    setIsModalShow(true)
+                    setModalType('add')
+                  }}
+                  style={{ borderRadius: 10 }}
+                >
+                  Add
+                </Button>
+              </Col>
+              <Input.Search
+                placeholder="Coba Cari Sini bos"
+                onSearch={onSearch}
+                style={{ width: 300, borderRadius: 30 }}
+                allowClear
+                enterButton
+              />
+            </Row>
+
+            <Table
+              columns={columns}
+              onChange={onChange}
+              bordered={true}
+              dataSource={data}
+              pagination={{
+                pageSize: 5,
+                total: category.length,
               }}
-              style={{ borderRadius: 10 }}
+            />
+            <Modal
+              className="mbut"
+              footer={null}
+              title={modalType === 'edit' ? 'Edit' : 'Add'}
+              visible={isModalShow}
+              onCancel={handleCancel}
             >
-              Add
-            </Button>
-          </Col>
-          <Input.Search
-            placeholder="Coba Cari Sini bos"
-            onSearch={onSearch}
-            style={{ width: 300, borderRadius: 30 }}
-            allowClear
-            enterButton
-          />
-        </Row>
-        <Table
-          columns={columns}
-          onChange={onChange}
-          bordered={true}
-          dataSource={data}
-          pagination={{
-            pageSize: 5,
-            total: category.length,
-          }}
-        />
-        <Modal
-          className="mbut"
-          footer={null}
-          title={modalType === 'edit' ? 'Edit' : 'Add'}
-          visible={isModalShow}
-          onCancel={handleCancel}
-        >
-          <Typography.Text style={{ fontWeight: 'bolder' }}>
-            Name Category
-          </Typography.Text>
-          <Formik
-            validationSchema={schema.category}
-            initialValues={initialValues}
-            enableReinitialize={true}
-            onSubmit={(values, actions) => {
-              if (modalType === 'edit') {
-                handleEdit(values)
-              } else {
-                handleAdd(values)
-              }
-            }}
-          >
-            {({ values, handleChange, handleSubmit, errors, touched }) => {
-              const condition =
-                errors.name && touched.name ? 'mt-2 bounce' : 'mt-2'
-              return (
-                <>
-                  <Input
-                    allowClear
-                    className={condition}
-                    style={{ borderRadius: 10 }}
-                    name="name"
-                    value={values.name}
-                    placeholder="Input Nama Category"
-                    onChange={handleChange}
-                  />
-                  <Row justify="center" className="mt-2">
-                    <Col>
-                      <Button
-                        type="primary"
-                        style={{ width: 400, borderRadius: 10 }}
-                        onClick={handleSubmit}
-                      >
-                        Submit
-                      </Button>
-                    </Col>
-                  </Row>
-                </>
-              )
-            }}
-          </Formik>
-        </Modal>
+              <Typography.Text style={{ fontWeight: 'bolder' }}>
+                Name Category
+              </Typography.Text>
+              <Formik
+                validationSchema={schema.category}
+                initialValues={initialValues}
+                enableReinitialize={true}
+                onSubmit={(values, actions) => {
+                  if (modalType === 'edit') {
+                    handleEdit(values)
+                  } else {
+                    handleAdd(values)
+                  }
+                }}
+              >
+                {({ values, handleChange, handleSubmit, errors, touched }) => {
+                  const condition =
+                    errors.name && touched.name ? 'mt-2 bounce' : 'mt-2'
+                  return (
+                    <>
+                      <Input
+                        allowClear
+                        className={condition}
+                        style={{ borderRadius: 10 }}
+                        name="name"
+                        value={values.name}
+                        placeholder="Input Nama Category"
+                        onChange={handleChange}
+                      />
+                      <Row justify="center" className="mt-2">
+                        <Col>
+                          <Button
+                            type="primary"
+                            style={{ width: 400, borderRadius: 10 }}
+                            onClick={handleSubmit}
+                          >
+                            Submit
+                          </Button>
+                        </Col>
+                      </Row>
+                    </>
+                  )
+                }}
+              </Formik>
+            </Modal>
+          </>
+        )}
       </Card>
     </>
   )

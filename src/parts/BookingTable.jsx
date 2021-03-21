@@ -1,132 +1,102 @@
 import React from 'react'
-import { Table, Button, Col, Modal, Typography, Card, Row, Input } from 'antd'
+import { Table, Button, Col, Typography, Card, Row, Tooltip } from 'antd'
+import { withRouter } from 'react-router-dom'
+import { changedColorStatus } from 'Options/statusChanged'
+import axios from 'axios'
 import SearchBar from './SearchBar'
+import moment from 'moment'
 
 import 'antd/dist/antd.css'
 
-export default function CategoryTable() {
-  const [isModalShow, setIsModalShow] = React.useState(false)
+function BookingTable(props) {
+  const [data, setData] = React.useState([])
+  React.useEffect(() => {
+    axios.get('http://localhost:8090/v1/booking').then((res) => {
+      setData(res.data.data)
+    })
+  }, [axios])
   const columns = [
     {
       title: 'No',
-      dataIndex: 'nomor',
-      filters: [
-        {
-          text: 'Joe',
-          value: 'Joe',
-        },
-        {
-          text: 'Jim',
-          value: 'Jim',
-        },
-        {
-          text: 'Submenu',
-          value: 'Submenu',
-          children: [
-            {
-              text: 'Green',
-              value: 'Green',
-            },
-            {
-              text: 'Black',
-              value: 'Black',
-            },
-          ],
-        },
-      ],
+      dataIndex: 'invoice',
       onFilter: (value, record) => record.name.indexOf(value) === 0,
       sorter: (a, b) => a.name.length - b.name.length,
       sortDirections: ['descend'],
     },
     {
       title: 'Date',
-      dataIndex: 'name',
-      defaultSortOrder: 'descend',
-      sorter: (a, b) => a.age - b.age,
+      render: (value) => (
+        <Typography>{`${moment(value.bookingStartDate)
+          .locale('id')
+          .format('ll')} s/d ${moment(value.bookingEndDate)
+          .locale('id')
+          .format('ll')}`}</Typography>
+      ),
     },
     {
       title: 'Title',
-      dataIndex: 'address',
-      filters: [
-        {
-          text: 'London',
-          value: 'London',
-        },
-        {
-          text: 'New York',
-          value: 'New York',
-        },
-      ],
-      filterMultiple: false,
-      onFilter: (value, record) => record.address.indexOf(value) === 0,
-      sorter: (a, b) => a.address.length - b.address.length,
-      sortDirections: ['descend', 'ascend'],
+      dataIndex: 'itemId',
+      render: (value) => <Typography>{value.title}</Typography>,
     },
     {
       title: 'Name Member',
-      dataIndex: 'name',
+      dataIndex: 'memberId',
       defaultSortOrder: 'descend',
-      sorter: (a, b) => a.name - b.name,
+      render: (value) => (
+        <Typography>
+          {value.firstName} {value.lastName}
+        </Typography>
+      ),
     },
     {
       title: 'Name Bank',
-      dataIndex: 'name',
+      dataIndex: 'payment',
+      render: (value) => <Typography>{value.bankFrom}</Typography>,
     },
     {
       title: 'Status',
-      dataIndex: 'name',
+      dataIndex: 'payment',
+      render: (value) => (
+        <Typography.Text style={{ color: changedColorStatus[value.status] }}>
+          {value.status}
+        </Typography.Text>
+      ),
     },
     {
       title: 'Action',
-      dataIndex: 'name',
+      render: (value) => {
+        return (
+          <Row gutter={[6]} justify="space-around">
+            <Col>
+              <Tooltip placement="rightTop">
+                <Button
+                  style={{ borderRadius: 20 }}
+                  onClick={() =>
+                    console.log(
+                      props.history.push(`/admin/booking/${value._id}`),
+                    )
+                  }
+                >
+                  View
+                </Button>
+              </Tooltip>
+            </Col>
+          </Row>
+        )
+      },
     },
   ]
-  function onChange(pagination, filters, sorter, extra) {
-    console.log(pagination, filters, sorter, extra)
-    console.log('params', pagination, filters, sorter, extra)
-  }
-  function onChange(pagination, filters, sorter, extra) {
-    console.log(pagination, filters, sorter, extra)
-    console.log('params', pagination, filters, sorter, extra)
-  }
-  const showModal = () => {
-    setIsModalShow(true)
-  }
-  const handleOk = (e) => {
-    setIsModalShow(false)
-  }
-  const handleCancel = (e) => {
-    setIsModalShow(false)
-  }
   return (
     <>
       <Card className="shadow mt-3" style={{ borderRadius: 30 }}>
         <Typography.Title level={2}>Booking</Typography.Title>
         <Row justify="space-between" gutter={[16, 8]}>
-          <Col>
-            <Button type="primary" onClick={showModal}>
-              + Add
-            </Button>
-            <Modal
-              title="Basic Modal"
-              visible={isModalShow}
-              onOk={handleOk}
-              onCancel={handleCancel}
-            >
-              <Typography.Text>Title</Typography.Text>
-              <Input placeholder="Input Title" />
-              <Typography.Text>Price</Typography.Text>
-              <Input placeholder="Input Title" />
-              <Typography.Text>Country</Typography.Text>
-              <Input placeholder="Input Title" />
-              <Typography.Text>City</Typography.Text>
-              <Input placeholder="Input Title" />
-            </Modal>
-          </Col>
           <SearchBar />
         </Row>
-        <Table columns={columns} onChange={onChange} />
+        <Table columns={columns} dataSource={data} />
       </Card>
     </>
   )
 }
+
+export default withRouter(BookingTable)

@@ -23,6 +23,7 @@ export default function SearchBar(props) {
         height={200}
         placeholder="Coba Cari Sini bos"
         onSearch={onSearch}
+        size="large"
         style={{ width: 300, borderRadius: 30 }}
       />
     </>

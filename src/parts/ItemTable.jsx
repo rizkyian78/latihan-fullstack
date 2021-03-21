@@ -185,7 +185,6 @@ function ItemTable(props) {
       })
   }
   function handleEdit(id, formData) {
-    console.log(formData)
     axios
       .put(`http://localhost:8090/v1/item/${id}`, formData)
       .then((res) => {

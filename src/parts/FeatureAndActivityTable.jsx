@@ -13,16 +13,23 @@ import {
   Tabs,
   notification,
   Image,
+  Modal,
+  Menu,
+  Dropdown,
 } from 'antd'
 import SearchBar from './SearchBar'
-import { UploadOutlined } from '@ant-design/icons'
+import UploadOutlined from '@ant-design/icons/UploadOutlined'
 import { Formik } from 'formik'
 import 'antd/dist/antd.css'
 import axios from 'axios'
+import schema from 'MasterValidation/mvFeature'
+
+import './CategoryTable.scss'
+import 'assets/antd.scss'
 
 const { TabPane } = Tabs
 
-export default function CategoryTable(props) {
+export default function FeatureAndActivity(props) {
   const [size, setSize] = React.useState('small')
   const [dataFeature, setDataFeature] = React.useState([])
   const [initialValues, setInitialValues] = React.useState({
@@ -31,12 +38,14 @@ export default function CategoryTable(props) {
     qty: 0,
     imageUrl: {},
   })
+  const [isModalShow, setIsModalShow] = React.useState(false)
+
   React.useEffect(() => {
     axios.get('http://localhost:8090/v1/feature').then((res) => {
       setDataFeature(res.data.data)
     })
   }, [axios])
-  const columns = [
+  const columnsFeature = [
     {
       title: 'No',
       width: 20,
@@ -61,15 +70,21 @@ export default function CategoryTable(props) {
       title: 'Image URL',
       dataIndex: 'imageUrl',
       width: 200,
-      render: (path) => (
-        <Card style={{ borderRadius: 20 }}>
-          <Image
-            width={200}
-            height={100}
-            src={`http://localhost:8090/${path}`}
-          />
-        </Card>
-      ),
+      render: (path) => {
+        return (
+          <Card style={{ borderRadius: 20 }}>
+            <Image
+              width={200}
+              height={100}
+              src={
+                path
+                  ? `http://localhost:8090/${path}`
+                  : 'https://www.generationsforpeace.org/wp-content/uploads/2018/03/empty.jpg'
+              }
+            />
+          </Card>
+        )
+      },
     },
     {
       title: 'Action',
@@ -79,7 +94,12 @@ export default function CategoryTable(props) {
           <Row gutter={[2]} justify="space-around">
             <Col>
               <Tooltip placement="rightTop">
-                <Button style={{ borderRadius: 20 }}>Edit</Button>
+                <Button
+                  style={{ borderRadius: 20 }}
+                  onClick={() => showModal(value)}
+                >
+                  Edit
+                </Button>
               </Tooltip>
             </Col>
             <Col>
@@ -102,7 +122,7 @@ export default function CategoryTable(props) {
       },
     },
   ]
-  const columns2 = [
+  const columnsActivity = [
     {
       title: 'No',
       width: 200,
@@ -159,6 +179,13 @@ export default function CategoryTable(props) {
       },
     },
   ]
+  const showModal = (value) => {
+    setInitialValues(value)
+    setIsModalShow(true)
+  }
+  const handleCancel = (e) => {
+    setIsModalShow(false)
+  }
   const handleAdd = (data) => {
     axios
       .post(`http://localhost:8090/v1/feature`, data)
@@ -207,6 +234,7 @@ export default function CategoryTable(props) {
           <TabPane tab="Show Feature" key="1">
             <Formik
               initialValues={initialValues}
+              validationSchema={schema.create}
               onSubmit={(values, actions) => {
                 const formData = new FormData()
                 for (const [key, value] of Object.entries(values)) {
@@ -234,35 +262,43 @@ export default function CategoryTable(props) {
                         <Typography.Text>Name</Typography.Text>
                         <Input
                           placeholder="Enter Name"
-                          className="mt-3 mb-3"
                           name="name"
                           value={values.name}
                           onChange={handleChange}
                           style={{ borderRadius: 10 }}
                         />
+                        {touched.name && (
+                          <p className="bounce" style={{ color: 'red' }}>
+                            {errors.name}
+                          </p>
+                        )}
                       </Col>
 
                       <Col span={12}>
                         <Typography.Text>Quantity</Typography.Text>
                         <Input
                           type="number"
-                          placeholder="Quantity"
-                          className="mt-3"
+                          size="large"
+                          placeholder="0"
                           name="qty"
                           onChange={handleChange}
                           style={{ borderRadius: 10 }}
                         />
+                        {touched.qty && (
+                          <p className="bounce" style={{ color: 'red' }}>
+                            {errors.qty}
+                          </p>
+                        )}
                       </Col>
                       <Upload
                         {...props}
+                        accept="image/png, image/jpeg"
                         name="imageUrl"
                         onChange={(e) => {
                           setFieldValue('imageUrl', e.file)
                         }}
                       >
-                        <Col className="mt-3">
-                          <Typography.Text>Image</Typography.Text>
-                        </Col>
+                        <Col className="mt-3"></Col>
                         <Button icon={<UploadOutlined />}>
                           Click to Upload Image
                         </Button>
@@ -270,7 +306,8 @@ export default function CategoryTable(props) {
                       <Button
                         className="mt-3"
                         type="primary"
-                        style={{ borderRadius: 10 }}
+                        // disabled={touched.name && touched.qty ? true : false}
+                        style={{ borderRadius: 10, width: 200 }}
                         onClick={handleSubmit}
                       >
                         Save
@@ -280,7 +317,10 @@ export default function CategoryTable(props) {
                       <Row justify="end">
                         <SearchBar />
                       </Row>
-                      <Table columns={columns} dataSource={dataFeature} />
+                      <Table
+                        columns={columnsFeature}
+                        dataSource={dataFeature}
+                      />
                     </Col>
                   </Row>
                 )
@@ -307,9 +347,6 @@ export default function CategoryTable(props) {
                   />
                 </Col>
                 <Upload {...props}>
-                  <Col className="mt-3">
-                    <Typography.Text>Image</Typography.Text>
-                  </Col>
                   <Button icon={<UploadOutlined />}>
                     Click to Upload Image
                   </Button>
@@ -321,12 +358,81 @@ export default function CategoryTable(props) {
               <Col span={14}>
                 <Row justify="end">
                   <SearchBar />
-                  <Table columns={columns2} className="mt-2" />
+                  <Table columns={columnsActivity} className="mt-2" />
                 </Row>
               </Col>
             </Row>
           </TabPane>
         </Tabs>
+        <Modal
+          className="mbut"
+          bodyStyle={{ fontWeight: 'bolder' }}
+          footer={null}
+          title={'Edit'}
+          visible={isModalShow}
+          onCancel={handleCancel}
+        >
+          <Formik
+            initialValues={initialValues}
+            enableReinitialize
+            validationSchema={schema.create}
+            onSubmit={(values, actions) => {
+              console.log(values, actions)
+            }}
+          >
+            {({ values, handleChange, setFieldValue, handleSubmit }) => {
+              return (
+                <>
+                  <Typography.Text style={{ fontWeight: 'bolder' }}>
+                    Name
+                  </Typography.Text>
+                  <Input
+                    placeholder="Enter Name"
+                    className="mb-3"
+                    name="name"
+                    value={values.name}
+                    onChange={handleChange}
+                    style={{ borderRadius: 10 }}
+                  />
+                  <Typography.Text style={{ fontWeight: 'bolder' }}>
+                    Quantity
+                  </Typography.Text>
+                  <br></br>
+                  <Input
+                    type="number"
+                    onChange={handleChange}
+                    placeholder="Enter Quantity"
+                    size="large"
+                    className="mb-3"
+                    name="qty"
+                    value={values.qty}
+                    style={{ borderRadius: 10, width: 300 }}
+                  />
+                  <Upload
+                    {...props}
+                    name="imageUrl"
+                    accept="image/png, image/jpeg"
+                    onChange={(e) => {
+                      setFieldValue('imageUrl', e.file)
+                    }}
+                  >
+                    <Button icon={<UploadOutlined />}>
+                      Click to Upload Image
+                    </Button>
+                  </Upload>
+                  <Button
+                    className="mt-3"
+                    type="primary"
+                    onSubmit={handleSubmit}
+                    style={{ borderRadius: 10, width: 470 }}
+                  >
+                    Update
+                  </Button>
+                </>
+              )
+            }}
+          </Formik>
+        </Modal>
       </Card>
     </>
   )

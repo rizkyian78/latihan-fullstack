@@ -1,13 +1,16 @@
 import Header from 'parts/Header'
+import { parseJwt } from 'helper/Common'
 import React, { Component } from 'react'
 import { Navbar, Nav, Icon } from 'rsuite'
-import { Badge } from 'antd'
+import { Badge, Menu, Dropdown, Button } from 'antd'
+import { withRouter } from 'react-router-dom'
 
 import 'rsuite/dist/styles/rsuite-default.css'
 import 'antd/dist/antd.css'
 
-export default class Admin extends Component {
+class Admin extends Component {
   render() {
+    const payload = parseJwt(localStorage.getItem('Authorization'))
     return (
       <>
         <Navbar appearance="subtle" className="shadow">
@@ -20,7 +23,15 @@ export default class Admin extends Component {
                 <a href="#" className="head-example" />
               </Badge>
               <Nav.Item icon={<Icon icon="bell" size="lg" />} active></Nav.Item>
-              <Nav.Item className>Sulton Amin</Nav.Item>
+              <Nav.Item>{payload.nama}</Nav.Item>
+              <Nav.Item
+                onSelect={(e) => {
+                  localStorage.removeItem('Authorization')
+                  console.log(this.props.history.push('/admin'))
+                }}
+              >
+                Logout
+              </Nav.Item>
             </Nav>
           </Navbar.Body>
         </Navbar>
@@ -28,3 +39,5 @@ export default class Admin extends Component {
     )
   }
 }
+
+export default withRouter(Admin)

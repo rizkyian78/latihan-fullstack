@@ -1,9 +1,9 @@
 import React, { Component } from 'react'
 import NavbarAdmin from 'parts/NavbarAdmin'
 import SideBar from 'parts/Sidebar'
-import FeatureAndActivityTable from 'parts/FeatureAndActivityTable'
+import DetailBooking from 'parts/DetailBooking'
 
-export default class FeatureAndActivity extends Component {
+export default class Category extends Component {
   render() {
     return (
       <>
@@ -12,7 +12,7 @@ export default class FeatureAndActivity extends Component {
           <div className="row">
             <SideBar />
             <div className="col">
-              <FeatureAndActivityTable />
+              <DetailBooking />
             </div>
           </div>
         </div>

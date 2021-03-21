@@ -1,0 +1,30 @@
+.ant-input-lg {
+  font-weight: bold;
+}
+.ant-input-group .ant-input {
+  border-radius: 10px;
+}
+
+.ant-input-search
+  > .ant-input-group
+  > .ant-input-group-addon:last-child
+  .ant-input-search-button {
+  border-radius: 0 10px 10px 0;
+  margin-bottom: 50%;
+}
+
+h4.ant-typography,
+.ant-typography h4 {
+  margin-bottom: 0;
+  font-size: 16px;
+  font-weight: 400;
+}
+
+.ant-divider-dashed {
+  border-width: 5px 0 0;
+  // border-color: rgba(0, 0, 0, 0.06);
+}
+
+.ant-typography {
+  font-weight: bold;
+}
