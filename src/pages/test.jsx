@@ -16,64 +16,50 @@ export default function Test(props) {
   const [showMessage, setShowMessage] = React.useState('')
   const [lastMessage, setLastMessage] = React.useState('')
 
-  // React.useEffect(() => {
-  //   axios.get(`http://localhost:8010/v1/chat`).then((res) => {
-  //     setShowMessage(res.data.data)
-  //   })
-  // }, [axios, lastMessage])
+  React.useEffect(() => {
+    axios.get(`http://localhost:8090/v1/chat`).then((res) => {
+      setShowMessage(res.data.data)
+      setInitialValues(res.data.data)
+    })
+  }, [axios, lastMessage])
 
-  // React.useEffect(() => {
-  //   const socket = io('http://localhost:8010/', {
-  //     secure: true,
-  //     transports: ['websocket'],
-  //     auth: {
-  //       token: '',
-  //     },
-  //     path: '/socket', // added this line of code
-  //   })
-  //   socket.on('message', (data) => {
-  //     setLastMessage(data)
-  //   })
-  //   return () => {
-  //     socket.removeListener('message')
-  //   }
-  // })
+  React.useEffect(() => {
+    const socket = io('http://localhost:8090/', {
+      secure: true,
+      transports: ['websocket'],
+      path: '/socket', // added this line of code
+    })
+    socket.on('message', (data) => {
+      console.log(data)
+      setLastMessage(data)
+    })
+    return () => {
+      socket.removeListener('message')
+    }
+  })
 
   const handleAdd = (data) => {
     delete data.id
-    axios.post(`http://localhost:8010/v1/chat`, data).catch((err) => {
-      message.error(err.response.data.message)
+    axios.post(`http://localhost:8090/v1/chat`, data).catch((err) => {
+      message.error('tidak bisah')
     })
   }
+  console.log(showMessage)
   return (
     <>
       {showMessage &&
         showMessage.map((x) => {
-          console.log(x)
           return (
             <div>
-              {x.context},{' '}
-              {moment(x.waktu).locale('en').startOf('second').fromNow()}
-              <Image
-                key={x._id}
-                height={50}
-                width={50}
-                src={`http://localhost:8010/${x.fileUser}`}
-              />
+              {x.body},{' '}
+              {moment(x.createdAt).locale('en').startOf('second').fromNow()}
             </div>
           )
         })}
       <Formik
         initialValues={initialValues}
         onSubmit={(values, action) => {
-          const formData = new FormData()
-          for (const [key, value] of Object.entries(values)) {
-            if (key === 'file') {
-              formData.append('file', value.originFileObj)
-            }
-            formData.append(key, value)
-          }
-          handleAdd(formData)
+          handleAdd(values)
         }}
       >
         {({ values, handleChange, handleSubmit, setFieldValue }) => {

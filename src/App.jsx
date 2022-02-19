@@ -11,6 +11,7 @@ import AdminBooking from 'pages/Admin/Booking'
 import AdminItem from 'pages/Admin/Item'
 import AdminShowImage from 'pages/Admin/ShowImage'
 import AdminDetailBooking from 'pages/Admin/DetailBooking'
+import AdminDashboard from 'pages/Admin/Dashboard'
 import { BrowserRouter as Router, Route } from 'react-router-dom'
 
 function App() {
@@ -28,6 +29,7 @@ function App() {
         <Route exact path="/admin/booking" component={AdminBooking} />
         <Route exact path="/admin/booking/:id" component={AdminDetailBooking} />
         <Route exact path="/admin/item" component={AdminItem} />
+        <Route exact path="/admin/dashboard" component={AdminDashboard} />
         <Route exact path="/admin/item/image/:id" component={AdminShowImage} />
       </Router>
     </div>

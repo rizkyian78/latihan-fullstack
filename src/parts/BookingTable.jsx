@@ -54,6 +54,10 @@ function BookingTable(props) {
       render: (value) => <Typography>{value.bankFrom}</Typography>,
     },
     {
+      title: 'Invoice',
+      render: (value) => <Typography>{value.invoice}</Typography>,
+    },
+    {
       title: 'Status',
       dataIndex: 'payment',
       render: (value) => (

@@ -25,24 +25,14 @@ class Login extends Component {
     password: '',
   }
   logAuth = (data) => {
-    axios
-      .post(`http://localhost:8090/v1/auth/sign-in`, data)
-      .then((res) => {
-        console.log(res.data)
-        localStorage.setItem('Authorization', res.data.accessToken)
-        notification.success({
-          message: `Hello ${res.data.user.nama}`,
-          duration: 1,
-        })
-        setTimeout(() => {
-          this.props.history.push('/admin/category')
-        }, 500)
+    axios.post(`http://localhost:8010/v1/auth/sign-in`, data).then((res) => {
+      localStorage.setItem('Authorization', res.data.token)
+      notification.success({
+        message: `Hello`,
+        duration: 1,
       })
-      .catch((err) => {
-        notification.error({
-          message: err.response.data.message,
-        })
-      })
+      this.props.history.push('/example/192b7021-7a9b-4ec3-98d3-ca885fd8ee8a')
+    })
   }
   render() {
     const breadCrumbList = [

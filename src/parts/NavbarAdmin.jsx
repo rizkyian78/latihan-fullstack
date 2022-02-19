@@ -10,7 +10,6 @@ import 'antd/dist/antd.css'
 
 class Admin extends Component {
   render() {
-    const payload = parseJwt(localStorage.getItem('Authorization'))
     return (
       <>
         <Navbar appearance="subtle" className="shadow">
@@ -23,7 +22,7 @@ class Admin extends Component {
                 <a href="#" className="head-example" />
               </Badge>
               <Nav.Item icon={<Icon icon="bell" size="lg" />} active></Nav.Item>
-              <Nav.Item>{payload.nama}</Nav.Item>
+              <Nav.Item>Sulthon Amin</Nav.Item>
               <Nav.Item
                 onSelect={(e) => {
                   localStorage.removeItem('Authorization')
